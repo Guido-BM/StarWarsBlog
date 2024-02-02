@@ -5,19 +5,10 @@
   height: 100vh;
 }
 
-.loading-circle {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  border: 3px solid #ccc;
-  border-top-color: #000;
-  animation: spin 1s linear infinite;
-}
-
 .loading-bar {
   height: 5px;
   background-color: #000;
-  animation: progress 1.5s ease-in-out infinite alternate;
+  animation: progress 2.5s ease-in-out infinite alternate;
 }
 
 @keyframes spin {

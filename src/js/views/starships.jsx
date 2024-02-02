@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState, Suspense } from "react";
 import { Context } from "../store/appContext";
 import Spinner from "../views/spinner.jsx";
-const VehicleCard = React.lazy(() => import("../component/vehicleCard.jsx"));
+const StarshipCard = React.lazy(() => import("../component/starshipCard.jsx"));
 
 const Starships = () => {
   const { store, actions } = useContext(Context);
