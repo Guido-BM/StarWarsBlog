@@ -7,6 +7,7 @@ import Planets from "./views/planets.jsx";
 import { Species } from "./views/species.jsx";
 import Films from "./views/films.jsx";
 import { Starships } from "./views/starships.jsx";
+import Vehicles from "./views/vehicles.jsx";
 const People = React.lazy(() => import("./views/people.jsx"));
 
 import injectContext from "./store/appContext";
@@ -34,6 +35,7 @@ const Layout = () => {
                   </Suspense>
                 }
               />
+              <Route path="/vehicles" element={<Vehicles />} />
               <Route path="/planets" element={<Planets />} />
               <Route path="/species" element={<Species />} />
               <Route path="/films" element={<Films />} />

@@ -17,6 +17,9 @@ export const Navbar = () => {
         <Link to="/planets" className="m-2">
           <button className="btn btn-primary">Planets</button>
         </Link>
+        <Link to="/vehicles" className="m-2">
+          <button className="btn btn-primary">Vehicles</button>
+        </Link>
         <Link to="/species" className="m-2">
           <button className="btn btn-primary">Species</button>
         </Link>
