@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import useTypeWriter from "react-typewriter-hook";
 
-export const Home = () => {
+const Home = () => {
   const welcomeMessage = useTypeWriter(
     `A long time ago in a galaxy far, far away... a time was coming when the galaxy was in the middle of a civil war. Spies stole secret plans to the Empire's ultimate weapon, the Death Star, an armored space station with enough power to destroy an entire planet. Pursued by the Empire's sinister agents, Princess exploration of the galaxy.`
   );

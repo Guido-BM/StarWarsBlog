@@ -1,9 +1,7 @@
 import React, { useContext, useEffect, useState, Suspense } from "react";
 import { Context } from "../store/appContext";
 import Spinner from "./spinner.jsx";
-
-const PeopleCard = React.lazy(() => import("../component/peopleCard.jsx"));
-
+import PeopleCard from "../component/peopleCard.jsx";
 const People = () => {
   const { store, actions } = useContext(Context);
   const [page, setPage] = useState(1);

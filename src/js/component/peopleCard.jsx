@@ -4,7 +4,7 @@ import "../views/animeCard.css";
 
 const PeopleCard = ({ person }) => {
   return (
-    <div className="flip-card rounded mb-5">
+    <div className="flip-card rounded mb-2">
       <div className="flip-card-inner">
         <div className="flip-card-front">
           <img

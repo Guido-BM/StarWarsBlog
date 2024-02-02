@@ -2,13 +2,13 @@ import React, { Suspense } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import ScrollToTop from "./component/scrollToTop";
 
-import Home from "./views/home.jsx";
-import Planets from "./views/planets.jsx";
-import { Species } from "./views/species.jsx";
-import Films from "./views/films.jsx";
-import { Starships } from "./views/starships.jsx";
-import Vehicles from "./views/vehicles.jsx";
+const Home = React.lazy(() => import("./views/home.jsx"));
 const People = React.lazy(() => import("./views/people.jsx"));
+const Vehicles = React.lazy(() => import("./views/vehicles.jsx"));
+const Planets = React.lazy(() => import("./views/planets.jsx"));
+const Films = React.lazy(() => import("./views/films.jsx"));
+const Starships = React.lazy(() => import("./views/starships.jsx"));
+const Spinner = React.lazy(() => import("./views/spinner.jsx"));
 
 import injectContext from "./store/appContext";
 
@@ -25,23 +25,17 @@ const Layout = () => {
           <Navbar />
 
           <div className="flex-grow-1 overflow-auto">
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route
-                path="/people"
-                element={
-                  <Suspense fallback={<div>Loading...</div>}>
-                    <People />
-                  </Suspense>
-                }
-              />
-              <Route path="/vehicles" element={<Vehicles />} />
-              <Route path="/planets" element={<Planets />} />
-              <Route path="/species" element={<Species />} />
-              <Route path="/films" element={<Films />} />
-              <Route path="starships" element={<Starships />} />
-              <Route path="*" element={<h1>Not found!</h1>} />
-            </Routes>
+            <Suspense fallback={<Spinner />}>
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/people" element={<People />} />
+                <Route path="/vehicles" element={<Vehicles />} />
+                <Route path="/planets" element={<Planets />} />
+                <Route path="/films" element={<Films />} />
+                <Route path="/starships" element={<Starships />} />
+                <Route path="*" element={<h1>Not found!</h1>} />
+              </Routes>
+            </Suspense>
           </div>
 
           <Footer />

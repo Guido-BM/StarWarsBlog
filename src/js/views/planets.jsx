@@ -1,9 +1,7 @@
 import React, { useContext, useEffect, useState, Suspense } from "react";
 import { Context } from "../store/appContext";
 import Spinner from "../views/spinner.jsx";
-import PlanetCard from "../component/planetCard.jsx";
-
-const Card = React.lazy(() => import("../component/peopleCard.jsx"));
+const PlanetCard = React.lazy(() => import("../component/planetCard.jsx"));
 
 const Planets = () => {
   const { store, actions } = useContext(Context);
@@ -32,7 +30,7 @@ const Planets = () => {
       <div className="row">
         {store.planets.map((planet, index) => {
           return (
-            <div className="col-3" style={{ height: "720px" }} key={index}>
+            <div className="col-lg-4 col-md-5 col-sm-8 mb-4" key={index}>
               <Suspense fallback={<Spinner />}>
                 {planet && <PlanetCard planet={planet} />}
               </Suspense>
