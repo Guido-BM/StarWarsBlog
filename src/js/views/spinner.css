@@ -1,0 +1,36 @@
+.loading-animation {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+.loading-circle {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 3px solid #ccc;
+  border-top-color: #000;
+  animation: spin 1s linear infinite;
+}
+
+.loading-bar {
+  height: 5px;
+  background-color: #000;
+  animation: progress 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes progress {
+  0% {
+    width: 0;
+  }
+  100% {
+    width: 100%;
+  }
+}
