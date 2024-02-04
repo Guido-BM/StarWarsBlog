@@ -24,6 +24,11 @@ const getState = ({ getStore, getActions, setStore }) => {
     },
     actions: {
       fetchPeople: async function (page = 1) {
+        const store = getStore();
+        if (store.fetchedPagesForPeople.includes(page)) {
+          // If the page has already been fetched, do nothing
+          return;
+        }
         const response = await fetch(
           `https://swapi.tech/api/people/?page=${page}&limit=10`
         );
@@ -33,23 +38,28 @@ const getState = ({ getStore, getActions, setStore }) => {
             const detailsResponse = await fetch(
               `https://swapi.tech/api/people/${person.uid}`
             );
-            const detailsData = await detailsResponse.json();
-            const personImage = `https://starwars-visualguide.com/assets/img/characters/${person.uid}.jpg`;
-            return {
-              ...person,
-              ...detailsData.result.properties,
-              image: personImage,
-            };
+            if (detailsResponse.ok) {
+              const detailsData = await detailsResponse.json();
+              const personImage = `https://starwars-visualguide.com/assets/img/characters/${person.uid}.jpg`;
+              return {
+                ...person,
+                ...detailsData.result.properties,
+                image: personImage,
+              };
+            } else {
+              console.error(
+                "Failed to fetch person details:",
+                detailsResponse.status,
+                detailsResponse.statusText
+              );
+              return person; // return the person data without details in case of error
+            }
           });
           const newPeople = await Promise.all(peoplePromises);
-          const store = getStore();
           setStore({
             people: [...store.people, ...newPeople],
             fetchedPagesForPeople: [...store.fetchedPagesForPeople, page],
           });
-
-          // Fetch details for each person
-          newPeople.forEach((person) => this.fetchPeopleDetails(person.uid));
         } else {
           console.error(
             "Failed to fetch people:",
@@ -58,37 +68,13 @@ const getState = ({ getStore, getActions, setStore }) => {
           );
         }
       },
-      fetchPeopleDetails: async function (uid) {
-        const store = getStore();
-        if (!store.peopleDetails[uid]) {
-          const response = await fetch(`https://swapi.tech/api/people/${uid}`);
-          if (response.ok) {
-            const data = await response.json();
-            if (data && data.result && data.result.properties) {
-              const personImage = `https://starwars-visualguide.com/assets/img/characters/${uid}.jpg`;
-              setStore({
-                peopleDetails: {
-                  ...store.peopleDetails,
-                  [uid]: {
-                    ...data.result.properties,
-                    image: personImage,
-                  },
-                },
-              });
-            } else {
-              console.error("Invalid response body:", data);
-            }
-          } else {
-            console.error(
-              "Failed to fetch person details:",
-              response.status,
-              response.statusText
-            );
-          }
-        }
-      },
 
       fetchPlanets: async function (page = 1) {
+        const store = getStore();
+        if (store.fetchedPagesForPlanets.includes(page)) {
+          // If the page has already been fetched, do nothing
+          return;
+        }
         const response = await fetch(
           `https://swapi.tech/api/planets/?page=${page}&limit=10`
         );
@@ -98,21 +84,28 @@ const getState = ({ getStore, getActions, setStore }) => {
             const detailsResponse = await fetch(
               `https://swapi.tech/api/planets/${planet.uid}`
             );
-            const detailsData = await detailsResponse.json();
-            const planetImage = `https://starwars-visualguide.com/assets/img/planets/${planet.uid}.jpg`;
-            return {
-              ...planet,
-              ...detailsData.result.properties,
-              image: planetImage,
-            };
+            if (detailsResponse.ok) {
+              const detailsData = await detailsResponse.json();
+              const planetImage = `https://starwars-visualguide.com/assets/img/planets/${planet.uid}.jpg`;
+              return {
+                ...planet,
+                ...detailsData.result.properties,
+                image: planetImage,
+              };
+            } else {
+              console.error(
+                "Failed to fetch planet details:",
+                detailsResponse.status,
+                detailsResponse.statusText
+              );
+              return planet; // return the planet data without details in case of error
+            }
           });
           const newPlanets = await Promise.all(planetsPromises);
-          const store = getStore();
           setStore({
             planets: [...store.planets, ...newPlanets],
             fetchedPagesForPlanets: [...store.fetchedPagesForPlanets, page],
           });
-          newPlanets.forEach((planet) => this.fetchPlanetsDetails(planet.uid));
         } else {
           console.error(
             "Failed to fetch planets:",
@@ -121,26 +114,13 @@ const getState = ({ getStore, getActions, setStore }) => {
           );
         }
       },
-      fetchPlanetsDetails: async function (uid) {
-        const store = getStore();
-        if (!store.planetsDetails[uid]) {
-          const response = await fetch(
-            `https://starwars-visualguide.com/assets/img/planets/${uid}.jpg`
-          );
-          let image = "";
-          if (response.ok) {
-            image = response.url;
-          }
-          setStore({
-            planetsDetails: {
-              ...store.planetsDetails,
-              [uid]: image,
-            },
-          });
-        }
-      },
 
       fetchStarships: async function (page = 1) {
+        const store = getStore();
+        if (store.fetchedPagesForStarships.includes(page)) {
+          // If the page has already been fetched, do nothing
+          return;
+        }
         const response = await fetch(
           `https://swapi.tech/api/starships/?page=${page}&limit=10`
         );
@@ -150,30 +130,32 @@ const getState = ({ getStore, getActions, setStore }) => {
             const detailsResponse = await fetch(
               `https://swapi.tech/api/starships/${starship.uid}`
             );
-            const detailsData = await detailsResponse.json();
-
-            const starshipImageResponse = await fetch(
-              `https://starwars-visualguide.com/assets/img/starships/${starship.uid}.jpg`
-            );
-            const starshipImageBlob = await starshipImageResponse.blob();
-            const starshipImage = URL.createObjectURL(starshipImageBlob);
-            return {
-              ...starship,
-              ...detailsData.result.properties,
-              image: starshipImage,
-            };
+            if (detailsResponse.ok) {
+              const detailsData = await detailsResponse.json();
+              const starshipImageResponse = await fetch(
+                `https://starwars-visualguide.com/assets/img/starships/${starship.uid}.jpg`
+              );
+              const starshipImageBlob = await starshipImageResponse.blob();
+              const starshipImage = URL.createObjectURL(starshipImageBlob);
+              return {
+                ...starship,
+                ...detailsData.result.properties,
+                image: starshipImage,
+              };
+            } else {
+              console.error(
+                "Failed to fetch starship details:",
+                detailsResponse.status,
+                detailsResponse.statusText
+              );
+              return starship; // return the starship data without details in case of error
+            }
           });
           const newStarships = await Promise.all(starshipPromises);
-          const store = getStore();
           setStore({
             starships: [...store.starships, ...newStarships],
             fetchedPagesForStarships: [...store.fetchedPagesForStarships, page],
           });
-
-          // Fetch details for each starship
-          newStarships.forEach((starship) =>
-            this.fetchStarshipDetails(starship.uid)
-          );
         } else {
           console.error(
             "Failed to fetch starships:",
@@ -183,44 +165,41 @@ const getState = ({ getStore, getActions, setStore }) => {
         }
       },
 
-      fetchStarshipDetails: async function (uid) {
+      fetchSpecies: async function (page = 1) {
         const store = getStore();
-        if (!store.starshipsDetails[uid]) {
-          const response = await fetch(
-            `https://swapi.tech/api/starships/${uid}`
-          );
-          if (response.ok) {
-            const data = await response.json();
-            if (data && data.result && data.result.properties) {
-              const starshipImage = `https://starwars-visualguide.com/assets/img/starships/${uid}.jpg`;
-              setStore({
-                starshipsDetails: {
-                  ...store.starshipsDetails,
-                  [uid]: {
-                    ...data.result.properties,
-                    image: starshipImage,
-                  },
-                },
-              });
-            } else {
-              console.error("Invalid response body:", data);
-            }
-          } else {
-            console.error(
-              "Failed to fetch starship details:",
-              response.status,
-              response.statusText
-            );
-          }
+        if (store.fetchedPagesForSpecies.includes(page)) {
+          return;
         }
-      },
-
-      fetchSpecies: async function () {
-        const response = await fetch("https://swapi.tech/api/species/");
+        const response = await fetch(
+          `https://swapi.tech/api/species/?page=${page}&limit=10`
+        );
         if (response.ok) {
           const data = await response.json();
+          const speciesPromises = data.results.map(async (specie) => {
+            const detailsResponse = await fetch(
+              `https://swapi.tech/api/species/${specie.uid}`
+            );
+            if (detailsResponse.ok) {
+              const detailsData = await detailsResponse.json();
+              const specieImage = `https://starwars-visualguide.com/assets/img/species/${specie.uid}.jpg`;
+              return {
+                ...specie,
+                ...detailsData.result.properties,
+                image: specieImage,
+              };
+            } else {
+              console.error(
+                "Failed to fetch specie details:",
+                detailsResponse.status,
+                detailsResponse.statusText
+              );
+              return specie; // return the specie data without details in case of error
+            }
+          });
+          const newSpecies = await Promise.all(speciesPromises);
           setStore({
-            species: data.results,
+            species: [...store.species, ...newSpecies],
+            fetchedPagesForSpecies: [...store.fetchedPagesForSpecies, page],
           });
         } else {
           console.error(
@@ -230,33 +209,13 @@ const getState = ({ getStore, getActions, setStore }) => {
           );
         }
       },
-      fetchSpeciesDetails: async function (uid) {
-        const store = getStore();
-        if (!store.speciesDetails[uid]) {
-          const response = await fetch(`https://swapi.tech/api/species/${uid}`);
-          if (response.ok) {
-            const data = await response.json();
-            if (data && data.result && data.result.properties) {
-              setStore({
-                speciesDetails: {
-                  ...store.speciesDetails,
-                  [uid]: data.result.properties,
-                },
-              });
-            } else {
-              console.error("Invalid response body:", data);
-            }
-          } else {
-            console.error(
-              "Failed to fetch species details:",
-              response.status,
-              response.statusText
-            );
-          }
-        }
-      },
 
       fetchVehicle: async function (page = 1) {
+        const store = getStore();
+        if (store.fetchedPagesForVehicles.includes(page)) {
+          // If the page has already been fetched, do nothing
+          return;
+        }
         const response = await fetch(
           `https://swapi.tech/api/vehicles/?page=${page}&limit=10`
         );
@@ -266,31 +225,35 @@ const getState = ({ getStore, getActions, setStore }) => {
             const detailsResponse = await fetch(
               `https://swapi.tech/api/vehicles/${vehicle.uid}`
             );
-            const detailsData = await detailsResponse.json();
-
-            const vehicleImageResponse = await fetch(
-              `https://starwars-visualguide.com/assets/img/vehicles/${vehicle.uid}.jpg`
-            );
-            const vehicleImageBlob = await vehicleImageResponse.blob();
-            const vehicleImage = URL.createObjectURL(vehicleImageBlob);
-
-            return {
-              ...vehicle,
-              ...detailsData.result.properties,
-              image: vehicleImage,
-            };
+            if (detailsResponse.ok) {
+              const detailsData = await detailsResponse.json();
+              const vehicleImage = `https://starwars-visualguide.com/assets/img/vehicles/${vehicle.uid}.jpg`;
+              return {
+                ...vehicle,
+                ...detailsData.result.properties,
+                image: vehicleImage,
+              };
+            } else {
+              console.error(
+                "Failed to fetch vehicle details:",
+                detailsResponse.status,
+                detailsResponse.statusText
+              );
+              return vehicle; // return the vehicle data without details in case of error
+            }
           });
           const newVehicles = await Promise.all(vehiclePromises);
-          const store = getStore();
           setStore({
             vehicles: [...store.vehicles, ...newVehicles],
             fetchedPagesForVehicles: [...store.fetchedPagesForVehicles, page],
+            vehicleDetails: {
+              ...store.vehicleDetails,
+              ...newVehicles.reduce((acc, vehicle) => {
+                acc[vehicle.uid] = vehicle;
+                return acc;
+              }, {}),
+            },
           });
-
-          // Fetch details for each vehicle
-          newVehicles.forEach((vehicle) =>
-            this.fetchVehicleDetails(vehicle.uid)
-          );
         } else {
           console.error(
             "Failed to fetch vehicles:",
@@ -299,68 +262,43 @@ const getState = ({ getStore, getActions, setStore }) => {
           );
         }
       },
-      fetchVehicleDetails: async function (uid) {
-        const store = getStore();
-        store.vehicleDetails = store.vehicleDetails || {};
-        if (!store.vehicleDetails[uid]) {
-          const response = await fetch(
-            `https://swapi.tech/api/vehicles/${uid}`
-          );
-          if (response.ok) {
-            const data = await response.json();
-            if (data && data.result && data.result.properties) {
-              const vehicleImage = `https://starwars-visualguide.com/assets/img/vehicles/${uid}.jpg`;
-              setStore({
-                vehicleDetails: {
-                  ...store.vehicleDetails,
-                  [uid]: {
-                    ...data.result.properties,
-                    image: vehicleImage,
-                  },
-                },
-              });
-            } else {
-              console.error("Invalid response body:", data);
-            }
-          } else {
-            console.error(
-              "Failed to fetch vehicle details:",
-              response.status,
-              response.statusText
-            );
-          }
-        }
-      },
 
-      fetchFilms: async function () {
-        const response = await fetch("https://swapi.tech/api/films/");
+      fetchFilms: async function (page = 1) {
+        const store = getStore();
+        if (store.fetchedPagesForFilms.includes(page)) {
+          // If the page has already been fetched, do nothing
+          return;
+        }
+        const response = await fetch(
+          `https://swapi.tech/api/films/?page=${page}&limit=10`
+        );
         if (response.ok) {
           const data = await response.json();
-          const films = await Promise.all(
-            data.result.map(async (film) => {
-              const response = await fetch(
-                `https://starwars-visualguide.com/assets/img/films/${film.uid}.jpg`
-              );
-              let image = "";
-              if (response.ok) {
-                image = response.url;
-              }
+          const filmsPromises = data.result.map(async (film) => {
+            const detailsResponse = await fetch(
+              `https://swapi.tech/api/films/${film.uid}`
+            );
+            if (detailsResponse.ok) {
+              const detailsData = await detailsResponse.json();
+              const filmImage = `https://starwars-visualguide.com/assets/img/films/${film.uid}.jpg`;
               return {
-                uid: film.uid,
-                created: film.properties.created,
-                edited: film.properties.edited,
-                producer: film.properties.producer,
-                title: film.properties.title,
-                episode_id: film.properties.episode_id,
-                director: film.properties.director,
-                release_date: film.properties.release_date,
-                opening_crawl: film.properties.opening_crawl,
-                image: image,
+                ...film,
+                ...detailsData.result.properties,
+                image: filmImage,
               };
-            })
-          );
+            } else {
+              console.error(
+                "Failed to fetch film details:",
+                detailsResponse.status,
+                detailsResponse.statusText
+              );
+              return film; // return the film data without details in case of error
+            }
+          });
+          const newFilms = await Promise.all(filmsPromises);
           setStore({
-            films: films,
+            films: [...store.films, ...newFilms],
+            fetchedPagesForFilms: [...store.fetchedPagesForFilms, page],
           });
         } else {
           console.error(

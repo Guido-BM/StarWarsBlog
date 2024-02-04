@@ -8,6 +8,7 @@ const Vehicles = React.lazy(() => import("./views/vehicles.jsx"));
 const Planets = React.lazy(() => import("./views/planets.jsx"));
 const Films = React.lazy(() => import("./views/films.jsx"));
 const Starships = React.lazy(() => import("./views/starships.jsx"));
+const Species = React.lazy(() => import("./views/species.jsx"));
 const Spinner = React.lazy(() => import("./views/spinner.jsx"));
 
 import injectContext from "./store/appContext";
@@ -33,6 +34,7 @@ const Layout = () => {
                 <Route path="/planets" element={<Planets />} />
                 <Route path="/films" element={<Films />} />
                 <Route path="/starships" element={<Starships />} />
+                <Route path="/species" element={<Species />} />
                 <Route path="*" element={<h1>Not found!</h1>} />
               </Routes>
             </Suspense>

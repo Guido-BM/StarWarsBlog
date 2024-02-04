@@ -3,7 +3,7 @@ import useTypeWriter from "react-typewriter-hook";
 
 const Home = () => {
   const welcomeMessage = useTypeWriter(
-    `A long time ago in a galaxy far, far away... a time was coming when the galaxy was in the middle of a civil war. Spies stole secret plans to the Empire's ultimate weapon, the Death Star, an armored space station with enough power to destroy an entire planet. Pursued by the Empire's sinister agents, Princess exploration of the galaxy.`
+    `Turmoil has engulfed the Galactic Republic. The taxation of trade routes to outlying star system is in dispute. Hoping to resolve the matter with a blockade of deadly battleships, the greedy Trade Federation has stopped all shipping to the small planet of Naboo. While the Congress of the Republic endlessly debates this alarming chain of events, the Supreme Chancellor has secretly dispatched two Jedi Knights, the guardians of peace and justice in the galaxy, to settle the conflict...`
   );
 
   useEffect(() => {

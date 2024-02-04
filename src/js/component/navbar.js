@@ -30,6 +30,9 @@ export const Navbar = () => {
         <Link to="/starships" className="m-2">
           <button className="btn star-wars-btn">Starships</button>
         </Link>
+        <Link to="/species" className="m-2">
+          <button className="btn star-wars-btn">Species</button>
+        </Link>
       </div>
     </nav>
   );
