@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState, Suspense } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Context } from "../store/appContext";
 import Spinner from "./spinner.jsx";
 import FilmCard from "../component/filmCard.jsx";
